@@ -1,6 +1,7 @@
 package org.ssvv.console;
 
 import java.util.Scanner;
+
 import org.ssvv.domain.Nota;
 import org.ssvv.domain.Student;
 import org.ssvv.domain.Tema;
@@ -33,19 +34,19 @@ public class UI {
     }
 
     public void uiPrintAllStudents() {
-        for(Student student : service.findAllStudents()) {
+        for (Student student : service.findAllStudents()) {
             System.out.println(student);
         }
     }
 
     public void uiPrintAllTeme() {
-        for(Tema tema : service.findAllTeme()) {
+        for (Tema tema : service.findAllTeme()) {
             System.out.println(tema);
         }
     }
 
     public void uiPrintAllNote() {
-        for(Nota note : service.findAllNote()) {
+        for (Nota note : service.findAllNote()) {
             System.out.println(note);
         }
     }
@@ -60,12 +61,17 @@ public class UI {
         String nume = scanner.nextLine();
 
         System.out.println("Introduceti grupa studentului: ");
-        int grupa = scanner.nextInt();
+        int grupa = Integer.parseInt(scanner.nextLine());
 
-        if (service.saveStudent(id, nume, grupa) != 0) {
+        System.out.println("Introduceti emailul studentului");
+        final var email = scanner.nextLine();
+
+        System.out.println("Introduceti numele profesorului");
+        final var prof = scanner.nextLine();
+
+        if (service.saveStudent(id, nume, grupa, email, prof) != null) {
             System.out.println("Student adaugat cu succes! \n");
-        }
-        else {
+        } else {
             System.out.println("Student existent sau invalid! \n");
         }
     }
@@ -85,10 +91,9 @@ public class UI {
         System.out.println("Introduceti saptamana startline a temei: ");
         int startline = scanner.nextInt();
 
-        if (service.saveTema(id, descriere, deadline, startline) != 0) {
+        if (service.saveTema(id, descriere, deadline, startline) != null) {
             System.out.println("Tema adaugata cu succes! \n");
-        }
-        else {
+        } else {
             System.out.println("Tema existenta sau invalida! \n");
         }
     }
@@ -103,26 +108,18 @@ public class UI {
         String idTema = scanner.nextLine();
 
         System.out.println("Introduceti valoarea notei: ");
-        String linie = scanner.nextLine();
-        double valNota = Double.parseDouble(linie);
+        final var valNota = Double.parseDouble(scanner.nextLine());
 
         System.out.println("Introduceti saptamana de predare a temei: ");
-        String linie2 = scanner.nextLine();
-        int predata = Integer.parseInt(linie2);
+        final var predata = Integer.parseInt(scanner.nextLine());
 
         System.out.println("Dati un feedback temei: ");
         String feedback = scanner.nextLine();
 
-        int result = service.saveNota(idStudent, idTema, valNota, predata, feedback);
-        if (result == 1) {
-            service.createStudentFile(idStudent, idTema);
+        if (service.saveNota(idStudent, idTema, valNota, predata, feedback) != null) {
             System.out.println("Nota adaugata cu succes! \n");
-        }
-        else if (result == 0) {
-            System.out.println("Nota existenta! \n");
-        }
-        else {
-            System.out.println("Student sau tema inexistenta! \n");
+        } else {
+            System.out.println("Nota existenta sau invalida! \n");
         }
     }
 
@@ -134,8 +131,7 @@ public class UI {
 
         if (service.deleteStudent(id) != 0) {
             System.out.println("Student sters cu succes! \n");
-        }
-        else {
+        } else {
             System.out.println("Studentul nu exista! \n");
         }
     }
@@ -148,8 +144,7 @@ public class UI {
 
         if (service.deleteTema(id) != 0) {
             System.out.println("Tema stearsa cu succes! \n");
-        }
-        else {
+        } else {
             System.out.println("Tema nu exista! \n");
         }
     }
@@ -164,12 +159,17 @@ public class UI {
         String numeNou = scanner.nextLine();
 
         System.out.println("Introduceti noua grupa a studentului: ");
-        int grupaNoua = scanner.nextInt();
+        int grupaNoua = Integer.parseInt(scanner.nextLine());
 
-        if (service.updateStudent(id, numeNou, grupaNoua) != 0) {
+        System.out.println("Introduceti emailul studentului");
+        final var emailNou = scanner.nextLine();
+
+        System.out.println("Introduceti numele profesorului");
+        final var profNou = scanner.nextLine();
+
+        if (service.updateStudent(id, numeNou, grupaNoua, emailNou, profNou) != null) {
             System.out.println("Student actualizat cu succes! \n");
-        }
-        else {
+        } else {
             System.out.println("Studentul nu exista! \n");
         }
     }
@@ -185,8 +185,7 @@ public class UI {
 
         if (service.extendDeadline(id, nrWeeks) != 0) {
             System.out.println("Deadline extins cu succes! \n");
-        }
-        else {
+        } else {
             System.out.println("Tema nu exista! \n");
         }
     }
@@ -197,11 +196,11 @@ public class UI {
 
         printMenu();
 
-        while(cmd != 0) {
+        while (cmd != 0) {
             System.out.println("Introduceti comanda: ");
             cmd = scanner.nextInt();
 
-            switch(cmd) {
+            switch (cmd) {
                 case 11:
                     uiPrintAllStudents();
                     break;

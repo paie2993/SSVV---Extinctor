@@ -28,12 +28,21 @@ public abstract class AbstractCRUDRepository<ID, E extends HasID<ID>> implements
     @Override
     public Iterable<E> findAll() { return entities.values(); }
 
+    /**
+     * @param entity; entity must be not null
+     * @return null if entity could not be saved, otherwise the saved entity is returned
+     * @throws ValidationException
+     */
     @Override
     public E save(E entity) throws ValidationException
     {
         try {
             validator.validate(entity);
-            return entities.putIfAbsent(entity.getID(), entity);
+            final var mapEntity = entities.putIfAbsent(entity.getID(), entity);
+            if (mapEntity != null) {
+                return null;
+            }
+            return entity;
         }
         catch (ValidationException ve) {
             System.out.println("Entitatea nu este valida! \n");
